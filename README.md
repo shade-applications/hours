@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hours
+**Truth before motivation. Trust before data.**
 
-## Getting Started
+> "You don't need more discipline. You need to see where your time actually goes."
 
-First, run the development server:
+## Overview
+**Hours** is a personal time intelligence system designed to reveal reality rather than push artificial productivity. It is an analytics-first, privacy-focused application that helps users track their time with honesty and reflection.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Product Philosophy
+*   **Truth > Motivation**: We show the user their actual habits, not an idealized version.
+*   **Privacy > Analytics**: Data stays on the device. No background spying.
+*   **Reflection > Pressure**: End-of-day reflections are more important than streaks.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Core Features
+- **Privacy-First**: All analytics are private by default.
+- **Unclassified Time**: Time not tracked is logged as "Unclassified", encouraging ownership of gaps.
+- **Reality-Based Tracking**: Supports parallel tasks (with accuracy adjustments) because life is messy.
+- **Yearly Recap**: A "Spotify Wrapped" for your life and effort.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Development Phases
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Phase 1: MVP (The Foundation)
+**Goal**: A functional tool that tracks time, handles unclassified gaps, and allows for daily reflection.
+-   **Today Screen**: Active timer, task switching, interrupt handling.
+-   **Task Management**: Intent setting ("I plan to spend 2h"), manual timer.
+-   **Unclassified Time Logic**: Automatic logging of time between tasks.
+-   **Reflection**: End-of-day prompts ("What went well?", "What distracted you?").
+-   **Basic Analytics**: Daily view and Intent vs. Actual comparison.
 
-## Learn More
+### Phase 2: Enhancement (Flow & Polish)
+**Goal**: Add structure and features that refine the tracking experience without adding pressure.
+-   **Pomodoro Layer**: Optional interval timers integrated into tasks.
+-   **Shareable Analytics**: Generate privacy-safe, vanity-free stats cards.
+-   **Task Deduplication**: Smart suggestions to merge "DSA" and "dsa practice".
+-   **Parallel Timers**: Handling multi-tasking with explicit accuracy caveats.
 
-To learn more about Next.js, take a look at the following resources:
+### Phase 3: Insight (The Long View)
+**Goal**: Turn data into memory and deep understanding.
+-   **Yearly Recap**: Story-based visualization of the user's year.
+-   **Enhanced Analytics**: Focus scores, distraction patterns (Opt-in).
+-   **Data Export**: Full control over user data.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Tech Stack Constraints
+-   **Offline-First**: Must work without internet.
+-   **Local Database**: SQLite or robust local storage (IndexedDB).
+-   **Performance**: Battery efficient, minimal background processing.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Documentation
+-   [Product Requirement Doc](prd.md)
+-   [Full Documentation Bundle](all-docs.md)
