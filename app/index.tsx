@@ -35,6 +35,6 @@ export default function Index() {
                     </TouchableOpacity>
                 </Link>
             </View>
-        </View>
+        </SafeAreaView>
     );
 }
