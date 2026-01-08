@@ -1,47 +1,45 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface TimerState {
     activeTaskId: number | null;
+    activeTaskName: string | null;
     startTime: number | null; // Timestamp
     isRunning: boolean;
 
-    startTimer: (taskId: number | null) => void;
+    startTimer: (taskId: number, taskName: string) => void;
     stopTimer: () => void;
-    resetTimer: () => void;
+    resumeTimer: () => void;
 }
 
 export const useTimerStore = create<TimerState>()(
     persist(
         (set) => ({
             activeTaskId: null,
+            activeTaskName: null,
             startTime: null,
             isRunning: false,
 
-            startTimer: (taskId) => set({
+            startTimer: (taskId, taskName) => set({
                 activeTaskId: taskId,
+                activeTaskName: taskName,
                 startTime: Date.now(),
                 isRunning: true
             }),
 
             stopTimer: () => set({
                 isRunning: false,
-                // We keep activeTaskId/startTime until explicitly reset or stored?
-                // Usually stop implies we are done with this session.
-                // But the detailed logic will be handled by the component interacting with DB.
-                // This store primarily tracks "what is currently happening" for UI.
                 activeTaskId: null,
+                activeTaskName: null,
                 startTime: null
             }),
 
-            resetTimer: () => set({
-                activeTaskId: null,
-                startTime: null,
-                isRunning: false
-            }),
+            resumeTimer: () => set({ isRunning: true })
         }),
         {
-            name: 'hours-timer-storage', // name of the item in the storage (must be unique)
+            name: 'hours-timer-storage',
+            storage: createJSONStorage(() => AsyncStorage),
         }
     )
 );

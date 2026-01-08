@@ -1,51 +1,49 @@
-import Dexie, { type EntityTable } from 'dexie';
+import * as SQLite from 'expo-sqlite';
 
-export interface Task {
-    id: number;
-    name: string;
-    intentHours: number; // Scheduled/Intended duration in hours (can be 0)
-    createdAt: Date;
-    isArchived: boolean;
-    pomodoroSettings?: {
-        workDuration: number; // minutes
-        breakDuration: number; // minutes
-        longBreakDuration: number; // minutes
-    };
+export const dbName = 'hours.db';
+
+export const initDb = async () => {
+    const db = await SQLite.openDatabaseAsync(dbName);
+
+    await db.execAsync(`
+    PRAGMA journal_mode = WAL;
+    
+    CREATE TABLE IF NOT EXISTS tasks (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      intent_hours REAL DEFAULT 0,
+      created_at TEXT NOT NULL,
+      is_archived INTEGER DEFAULT 0
+    );
+
+    CREATE TABLE IF NOT EXISTS time_logs (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      task_id INTEGER,
+      start_time TEXT NOT NULL,
+      end_time TEXT,
+      is_parallel INTEGER DEFAULT 0,
+       -- Foreign key technically, but simplified here
+      FOREIGN KEY(task_id) REFERENCES tasks(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS reflections (
+       id INTEGER PRIMARY KEY AUTOINCREMENT,
+       date TEXT NOT NULL UNIQUE,
+       q_went_well TEXT,
+       q_distractions TEXT,
+       q_tomorrow TEXT,
+       created_at TEXT NOT NULL
+    );
+  `);
+
+    return db;
 }
 
-export interface TimeLog {
-    id: number;
-    taskId: number | null; // null means "Unclassified" but explicitly logged? 
-    // Actually PRD says "Unclassified" if no timer running.
-    // But we might want to log "Unclassified" blocks explicitly after reflection.
-    startTime: Date;
-    endTime: Date | null; // null means currently running (active)
-    isParallel: boolean;
-    accuracyWeight: number; // 1.0 for single task, 0.5 for two parallel, etc.
+// Simple helper to get DB instance (non-hook for pure functions)
+let _db: SQLite.SQLiteDatabase | null = null;
+export const getDb = async () => {
+    if (!_db) {
+        _db = await SQLite.openDatabaseAsync(dbName);
+    }
+    return _db;
 }
-
-export interface Reflection {
-    date: string; // YYYY-MM-DD
-    note: string;
-    questions: {
-        wentWell: string;
-        distractions: string;
-        changeForTomorrow: string;
-    };
-    createdAt: Date;
-}
-
-const db = new Dexie('HoursDatabase') as Dexie & {
-    tasks: EntityTable<Task, 'id'>;
-    logs: EntityTable<TimeLog, 'id'>;
-    reflections: EntityTable<Reflection, 'date'>;
-};
-
-// Schema definition
-db.version(1).stores({
-    tasks: '++id, name, createdAt, isArchived',
-    logs: '++id, taskId, startTime, endTime, isParallel',
-    reflections: 'date, createdAt'
-});
-
-export { db };
