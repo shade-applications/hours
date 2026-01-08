@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { initDb } from '../src/lib/db';
 import { ActiveTimer } from '../src/components/ActiveTimer';
 import { AddTask } from '../src/components/AddTask';
@@ -19,7 +20,7 @@ export default function Index() {
     }, []);
 
     return (
-        <View className="flex-1 bg-background pt-safe">
+        <SafeAreaView className="flex-1 bg-background" edges={['top']}>
             <ActiveTimer />
 
             <AddTask onAdd={refreshTasks} />

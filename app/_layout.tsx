@@ -7,12 +7,8 @@ import "../global.css";
 export default function Layout() {
     return (
         <SafeAreaProvider>
-            <View className="flex-1 bg-background">
-                <StatusBar style="light" />
-                <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#09090b' } }}>
-                    <Slot />
-                </Stack>
-            </View>
+            <StatusBar style="light" />
+            <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#09090b' } }} />
         </SafeAreaProvider>
     );
 }
