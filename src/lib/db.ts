@@ -1,11 +1,15 @@
+import { Platform } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 
 export const dbName = 'hours.db';
 
 export const initDb = async () => {
-    const db = await SQLite.openDatabaseAsync(dbName);
-
-    await db.execAsync(`
+  if (Platform.OS === 'web') {
+    console.warn("SQLite is not supported on web. Persistence disabled.");
+    return null;
+  }
+  const db = await SQLite.openDatabaseAsync(dbName);
+  await db.execAsync(`
     PRAGMA journal_mode = WAL;
     
     CREATE TABLE IF NOT EXISTS tasks (
@@ -22,7 +26,6 @@ export const initDb = async () => {
       start_time TEXT NOT NULL,
       end_time TEXT,
       is_parallel INTEGER DEFAULT 0,
-       -- Foreign key technically, but simplified here
       FOREIGN KEY(task_id) REFERENCES tasks(id)
     );
 
@@ -35,15 +38,16 @@ export const initDb = async () => {
        created_at TEXT NOT NULL
     );
   `);
-
-    return db;
+  return db;
 }
 
-// Simple helper to get DB instance (non-hook for pure functions)
 let _db: SQLite.SQLiteDatabase | null = null;
 export const getDb = async () => {
-    if (!_db) {
-        _db = await SQLite.openDatabaseAsync(dbName);
-    }
-    return _db;
+  if (Platform.OS === 'web') {
+    throw new Error("SQLite not available on web");
+  }
+  if (!_db) {
+    _db = await SQLite.openDatabaseAsync(dbName);
+  }
+  return _db;
 }
